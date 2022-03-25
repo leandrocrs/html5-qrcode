@@ -491,7 +491,13 @@ export class Html5Qrcode {
             $this.videoElement?.removeEventListener("playing", onVideoResume);
         }
         this.videoElement.addEventListener("playing", onVideoResume);
-        this.videoElement.play();
+        const promise = this.videoElement.play();
+
+        if (promise != null) {
+            promise.catch((reason) => {
+                throw new Error(`Not possible resume ${reason}`);
+            });
+        }
     }
 
     /**
@@ -1281,7 +1287,13 @@ export class Html5Qrcode {
                 }
                 videoElement.addEventListener("playing", onVideoStart);
                 videoElement.srcObject = mediaStream;
-                videoElement.play();
+                const promise = videoElement.play();
+
+                if (promise != null) {
+                    promise.catch((reason) => {
+                        reject(reason);
+                    });
+                }
 
                 // Set state
                 $this.videoElement = videoElement;
